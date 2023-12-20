@@ -7,6 +7,8 @@ return require('packer').startup(function(use)
 	-- Packer can manage itself
 	use 'wbthomason/packer.nvim'
 
+    use 'nvim-lua/plenary.nvim'
+
 	use {
 		'nvim-telescope/telescope.nvim', tag = '0.1.5',
 		requires = { {'nvim-lua/plenary.nvim'} }
@@ -16,8 +18,7 @@ return require('packer').startup(function(use)
 		'rebelot/kanagawa.nvim',
 		config = function()
 			vim.cmd('colorscheme kanagawa')
-		end
-	})
+		end })
 
 	use ({ 
 		'nvim-treesitter/nvim-treesitter',
@@ -70,6 +71,18 @@ return require('packer').startup(function(use)
     use({
         "aserowy/tmux.nvim",
         config = function() return require("tmux").setup() end
+    })
+
+    use 'ThePrimeagen/harpoon'
+
+    use({
+        "kylechui/nvim-surround",
+        tag = "*", -- Use for stability; omit to use `main` branch for the latest features
+        config = function()
+            require("nvim-surround").setup({
+                -- Configuration here, or leave empty to use defaults
+            })
+        end
     })
 
 	end)
