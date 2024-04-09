@@ -20,3 +20,4 @@ vim.keymap.set({"n", "v"}, "<leader>d", [["_d]])
 
 -- rempat save command
 vim.keymap.set("n", "<leader>w", ":w<CR>")
+
