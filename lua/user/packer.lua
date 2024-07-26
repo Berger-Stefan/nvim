@@ -1,8 +1,7 @@
 -- This file can be loaded by calling `lua require('plugins')` from your init.vim
 local ensure_packer = function()
   local fn = vim.fn
-  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-  if fn.empty(fn.glob(install_path)) > 0 then
+  local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim' if fn.empty(fn.glob(install_path)) > 0 then
     fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
     vim.cmd [[packadd packer.nvim]]
     return true
@@ -61,7 +60,9 @@ return require('packer').startup(function(use)
   })
 
   use("github/copilot.vim")
+
   use("ggandor/leap.nvim")
+
   use({
     "lewis6991/gitsigns.nvim",
     config = function()
@@ -124,13 +125,63 @@ return require('packer').startup(function(use)
     end
   }
 
+  -- Interactice REPL
   use {
-    'norcalli/nvim-colorizer.lua',
+    'Vigemus/iron.nvim',
     config = function()
-      require("colorizer").setup()
+      local iron = require "iron.core"
+      iron.setup({
+          config = {
+          should_map_plug = false,
+          scratch_repl = true,
+          highlight_last = false,
+          repl_definition = {
+            python = {
+              command = { "ipython" },
+              format = require("iron.fts.common").bracketed_paste,
+            },
+          },
+          repl_open_cmd = require('iron.view').split.vertical.botright("35%")
+        },
+        keymaps = {
+          send_motion = "<space>r",
+          visual_send = "<space>r",
+        },
+      })
+    vim.keymap.set('n', '<space>rs', '<cmd>IronRepl<cr>')
+    vim.keymap.set('n', '<space>rf', '<cmd>IronFocus<cr>')
     end
   }
-  
+
+  -- Both are used to send code blocks to REPL
+  use {'kana/vim-textobj-user'}
+  use {'GCBallesteros/vim-textobj-hydrogen'} --<space>r ih -- to send code block
+
+  -- Better folding
+  use {
+    'kevinhwang91/nvim-ufo',
+    requires = 'kevinhwang91/promise-async',
+    config = function()
+      vim.o.foldcolumn = '1' -- '0' is not bad
+      vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+
+     -- Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+      vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+      vim.keymap.set('n', 'zM', require('ufo').closeAllFolds) 
+
+      require('ufo').setup({
+        provider_selector = function(bufnr, filetype, buftype)
+            return {'treesitter', 'indent'}
+      end
+    })
+    end
+  }
+
+  -- TODO Need to configure
+  -- use {"puremourning/vimspector"}
+
   if packer_bootstrap then
     require('packer').sync()
   end

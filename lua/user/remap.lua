@@ -18,6 +18,9 @@ vim.keymap.set("n", "<leader>Y", [["+Y]])
 
 vim.keymap.set({"n", "v"}, "<leader>d", [["_d]])
 
--- rempat save command
+-- remap save command
 vim.keymap.set("n", "<leader>w", ":w<CR>")
 
+-- remap brackets to german layout
+vim.keymap.set("n", "ü", "[", {noremap=true})
+vim.keymap.set("n", "ä", "]", {noremap=true})
